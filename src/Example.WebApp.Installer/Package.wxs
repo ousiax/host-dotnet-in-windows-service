@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?define Name = ".NET Example WebApp" ?>
+<?define Manufacturer = ".NET Example Corporation" ?>
+<?define Version = "1.0.0.0" ?>
+<?define UpgradeCode = "288C8793-D5D7-427F-A82F-B647ECDBDCC1" ?>
+<?define ServiceName = ".NET Example WebApp" ?>
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="$(Name)"
+           Manufacturer="$(Manufacturer)"
+           Version="$(Version)"
+           UpgradeCode="$(var.UpgradeCode)"
+           Compressed="true">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="ROOTDIRECTORY" Name="!(bind.Property.Manufacturer)">
+        <Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)">
+          <Directory Id="WEBROOTDIRECTORY" Name="wwwroot" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <ComponentGroup Id="WebAppServiceComponents" Directory="INSTALLFOLDER">
+      <Component Id="ServiceExecutable" Bitness="always64">
+        <File Source="$(var.Example.WebApp.TargetDir)publish\Example.WebApp.exe" />
+
+        <ServiceInstall Id="ServiceInstaller"
+                        Type="ownProcess"
+                        Name="$(ServiceName)"
+                        DisplayName="$(ServiceName)"
+                        Description="A joke service that periodically logs nerdy humor."
+                        Start="auto"
+                        ErrorControl="normal" />
+
+        <ServiceControl Id="StartService"
+                        Start="install"
+                        Stop="both"
+                        Remove="uninstall"
+                        Name="$(ServiceName)"
+                        Wait="true" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="AppSettingsComponents" Directory="INSTALLFOLDER">
+      <File Source="$(var.Example.WebApp.TargetDir)publish\appsettings.json" />
+      <Files Include="$(var.Example.WebApp.TargetDir)publish\appsettings.*.json" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="WebRootComponents" Directory="INSTALLFOLDER">
+      <Files Directory="WEBROOTDIRECTORY" Include="$(var.Example.WebApp.TargetDir)publish\wwwroot\**" />
+    </ComponentGroup>
+
+    <Feature Id="WebApp">
+      <ComponentGroupRef Id="WebAppServiceComponents"/>
+      <ComponentGroupRef Id="AppSettingsComponents" />
+      <ComponentGroupRef Id="WebRootComponents" />
+    </Feature>
+  </Package>
+</Wix>

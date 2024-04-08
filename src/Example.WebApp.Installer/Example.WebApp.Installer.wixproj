@@ -1,0 +1,7 @@
+<!-- Example.WebApp.Installer.wixproj -->
+
+<Project Sdk="WixToolset.Sdk/5.0.0">
+  <ItemGroup>
+    <ProjectReference Include="..\Example.WebApp\Example.WebApp.csproj" />
+  </ItemGroup>
+</Project>
