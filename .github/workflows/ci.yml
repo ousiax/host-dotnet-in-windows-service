@@ -1,0 +1,26 @@
+name: Leo
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Display dotnet info
+        run: dotnet --info
+      - name: dotnet publish WebApp
+        run: dotnet publish .\src\Example.WebApp
+      - name: dotnet build WebApp MSI package
+        run: dotnet build -r win-x64 -c Release -p:InstallerPlatform=x64 .\src\Example.WebApp.Installer\
