@@ -29,6 +29,9 @@ LoggerProviderOptions.RegisterProviderOptions<EventLogSettings, EventLogLoggerPr
 
 WebApplication app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.UseFileServer();
+
+// Set the path to `/hello`, instead of the root `/`.
+app.MapGet("/hello", () => "Hello World!");
 
 app.Run();
