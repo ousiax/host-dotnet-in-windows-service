@@ -1,4 +1,4 @@
-name: Leo
+name: Host .NET in Windows Service
 on:
   push:
     branches:
